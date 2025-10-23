@@ -1,0 +1,312 @@
+.about-container {
+  background: pink;
+  background-size: cover;
+  border-radius: 15px;
+  padding: 40px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  max-width: 95%; /* Increased to cover almost the entire laptop screen width responsively. */
+  margin: 0 auto;
+}
+
+
+/* About sections */
+.about-section {
+  margin-bottom: 40px;
+}
+
+.about-section h2 {
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 15px;
+  position: relative;
+  padding-left: 15px;
+}
+
+/* Decorative line next to section headings */
+.about-section h2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5px;
+  height: 30px;
+  background: linear-gradient(135deg, #333233 0%, #b7b4bb 100%);
+  border-radius: 3px;
+}
+
+.about-section p {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.8;
+  text-align: justify;
+}
+
+/* Values grid layout */
+.values-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+  margin-top: 25px;
+}
+
+/* Individual value item card */
+.value-item {
+  /* UPDATED: Changed from blueish-gray to a soft pink/lilac gradient to match the scheme */
+  background: linear-gradient(135deg, #858081 0%, #e9e0ec 100%); 
+  padding: 25px;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.value-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.value-item h3 {
+  font-size: 20px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.value-item p {
+  font-size: 15px;
+  color: #666;
+  line-height: 1.6;
+  text-align: left;
+}
+
+.cta-section {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
+  color: white;
+  padding: 80px 60px;
+  text-align: center;
+  border-radius: 2px;
+  margin-top: 80px;
+}
+
+.cta-section h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  font-weight: 400;
+}
+
+.cta-section p {
+  font-size: 1.2rem;
+  margin-bottom: 40px;
+  opacity: 0.9;
+}
+
+.cta-button {
+  display: inline-block;
+  padding: 18px 50px;
+  background: #8b7355;
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}
+
+.cta-button:hover {
+  background: #a68968;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(139, 115, 85, 0.4);
+}
+
+/* Responsive design for landscape orientation (tablets and small laptops) */
+@media (max-width: 1024px) and (orientation: landscape) {
+  .about-container {
+    padding: 30px;
+    max-width: 95%;
+  }
+  
+  .about-header h1 {
+    font-size: 36px;
+  }
+  
+  .about-section h2 {
+    font-size: 26px;
+  }
+  
+  .cta-section {
+    padding: 60px 40px;
+  }
+  
+  .cta-section h2 {
+    font-size: 2rem;
+  }
+}
+
+/* Responsive design for portrait orientation (tablets) */
+@media (max-width: 768px) and (orientation: landscape) {
+  .about-container {
+    padding: 25px;
+  }
+  
+  .about-header h1 {
+    font-size: 32px;
+  }
+  
+  .about-section h2 {
+    font-size: 24px;
+  }
+  
+  /* The layout should remain 2 columns in tablet landscape for a 'landscape' feel. */
+  /* The previous rule forcing 1fr here has been removed. */
+  
+  .cta-section {
+    padding: 50px 30px;
+  }
+  
+  .cta-section h2 {
+    font-size: 1.8rem;
+  }
+  
+  .cta-section p {
+    font-size: 1rem;
+  }
+}
+
+/* Responsive design for mobile landscape */
+@media (max-width: 768px) and (orientation: landscape) {
+  .about-container {
+    padding: 20px;
+    max-width: 95%;
+}
+  
+
+  .about-section {
+    margin-bottom: 30px;
+  }
+  
+  .about-section h2 {
+    font-size: 22px;
+  }
+  
+  .values-grid {
+    gap: 20px;
+  }
+  
+  .value-item {
+    padding: 20px;
+  }
+  
+  .cta-section {
+    padding: 40px 25px;
+    margin-top: 50px;
+  }
+  
+  .cta-section h2 {
+    font-size: 1.5rem;
+  }
+  
+  .cta-section p {
+    font-size: 0.95rem;
+    margin-bottom: 30px;
+  }
+  
+  .cta-button {
+    padding: 15px 40px;
+    font-size: 1rem;
+  }
+}
+
+/* Responsive design for mobile landscape */
+@media (max-width: 480px) and (orientation: landscape) {
+  .about-container {
+    padding: 20px;
+  }
+  
+  .about-header h1 {
+    font-size: 28px;
+  }
+  
+  .about-tagline {
+    font-size: 16px;
+  }
+  
+  .about-section h2 {
+    font-size: 22px;
+  }
+  
+  .about-section p {
+    font-size: 15px;
+  }
+  
+  .values-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .value-item {
+    padding: 20px;
+  }
+  
+.value-item h3 {
+    font-size: 18px;
+  }
+  
+  .value-item p {
+    font-size: 14px;
+  }
+  
+  .cta-section {
+    padding: 50px 20px;
+    margin-top: 50px;
+  }
+  
+  .cta-section h2 {
+    font-size: 1.8rem;
+  }
+  
+  .cta-section p {
+    font-size: 1rem;
+  }
+  
+  .cta-button {
+    padding: 15px 35px;
+    font-size: 0.95rem;
+  }
+}
+
+/* --- ADDED: Mobile Portrait Styling for devices up to 767px wide --- */
+@media (max-width: 767px) and (orientation: portrait) {
+  .about-container {
+    padding: 20px;
+    max-width: 100%; /* Use full width in portrait mode */
+  }
+  
+  .about-header h1 {
+    font-size: 32px;
+  }
+  
+  .about-section h2 {
+    font-size: 24px;
+  }
+  
+  /* Collapse the 2-column grid into a single column for portrait mobile view */
+  .values-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .about-section p,
+  .value-item p {
+    font-size: 15px;
+  }
+
+  .cta-section {
+    padding: 40px 20px;
+    margin-top: 40px;
+  }
+  
+  .cta-button {
+    padding: 15px 35px;
+    font-size: 0.95rem;
+  }
+}
