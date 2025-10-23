@@ -1,4 +1,5 @@
 import React from 'react';
+import EventsImage from '../images/EventsImage.jpg';
 import './About.css';
 
 /**
@@ -10,7 +11,12 @@ import './About.css';
     return (
         //Main container for the About component
         <div className="about-container">
-           {/*Mission Section -  explains company purpose */}
+           {/*About Us and Our Story sections - side by side */}
+           <div className="side-by-side-container">
+              {/*
+                This section now contains both 'About Us' (Mission) and 'Our Team' content,
+                making them both appear to the left of the image in the grid layout.
+              */}
               <section className='about-section'>
                 <h1>About Us</h1>
                 <p>Welcome to Snakepiece Event House Kenya, where creativity blends with precision. We are among the top event
@@ -19,22 +25,32 @@ import './About.css';
                     With over five years of experience in the event planning industry, our story is rooted in passion, artistry and excellence.
                     From intimate gatherings to large-scale productions, our team turn ideas into experiences that inspire, connect and celebrate life's most meaningful moments.        
                 </p>
+                
+                {/* MOVED: Team Section - now appears immediately below the 'About Us' paragraph 
+                */}
+                <div className='team-section-in-about-us'>
+                    <h2>Our Team</h2>
+                    <p>
+                        Behind every exceptional event is a dedicated team of creative professionals. Our planners, designers, and coordinators bring years of expertise, artistic vision, and meticulous attention to detail. We're passionate about what we do, and it shows in every event we create.
+
+                        From the initial consultation to the final farewell, our team is committed to providing personalized service, seamless execution, and an experience that's as stress-free as it is spectacular.
+                    </p>
+                </div>
               </section>
 
-              {/*Story section - company background */}
-                <section className='about-section'>
-                    <h2>Our Story</h2>
-                    <p>
-                        Founded in 2025, my app started as a small team of event enthusiasts with a vision to transform the event planning landscape in Nairobi.
-                        over the years, we have grown into full-service event planning firm known for our attention to detail, creativity and commitment to excellence.
-                        Our journey has been marked by numerous succesful events, each reflecting our dedication to delivering exceptional experiences.This has been guided by a simple belief: every event, big or small, should be a masterpiece.
-                        Over the years, we've had the honor of working with corporate brands, couples, and families who trust us to turn their visions into reality. 
-                        What sets us apart is our ability to blend luxury aesthetics with seamless execution, ensuring every detail tells a story.Our commitment to 
-                        excellence and innovation has helped us build lasting relationships with our clients.
-
-                    </p>
-                </section>
-
+              {/*Story section - company background (The Image container) */}
+              <section className='about-section'>
+                <div className='about-image'>
+                    <img src={EventsImage} alt='SnakePiece Event House'/>
+                </div>
+               
+              </section>
+           </div>
+           
+           {/* REMOVED: The original separate 'Team Section' JSX is deleted from here.
+             The 'Our Team' content is now inside the first side-by-side column.
+           */}
+           
                 {/*Values Section - company core principles */}
                 <section className='about-section'>
                     <h2>Our Values</h2>
@@ -64,17 +80,6 @@ import './About.css';
                         </div>
                     </div>          
                     
-                </section>
-
-                {/*Team Section - brief team introduction*/}
-                <section className='about-section'>
-                      <h2>Our Team</h2>
-                      <p>
-                        Behind every exceptional event is a dedicated team of creative professionals. Our planners, designers, and coordinators bring years of expertise, artistic vision, and meticulous attention to detail. We're passionate about what we do, and it shows in every event we create.
-
-                        From the initial consultation to the final farewell, our team is committed to providing personalized service, seamless execution, and an experience that's as stress-free as it is spectacular.
-                    </p>
-
                 </section>
 
                 <section className='about-section'>
