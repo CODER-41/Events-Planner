@@ -1,4 +1,3 @@
-/* --- CORE LAYOUT FIXES FOR SIDE-BY-SIDE ALIGNMENT --- */
 
 /* Side by side container for About Us and Our Story */
 .side-by-side-container {
@@ -9,7 +8,6 @@
   align-items: start; 
 }
 
-/* NEW RULE: Style for the team section inside the about column */
 .team-section-in-about-us {
     margin-top: 25px; 
 }
@@ -51,16 +49,13 @@
   }
 }
 
-/* --- THE REST OF YOUR CSS STYLES --- */
 
 .about-container {
-  /* UPDATED: Pink gradient to match hero section */
-  background: linear-gradient(135deg, #ffe8eb 0%, #ffc8d2 50%, #ff8fa3 100%); 
-  background-size: cover;
+  background: var(--light-pink);
   border-radius: 15px;
   padding: 40px;
   box-shadow: 0 10px 30px rgba(255, 107, 107, 0.2);
-  max-width: 95%; 
+  max-width: 95%;
   margin: 0 auto;
 }
 
@@ -69,7 +64,7 @@
 }
 
 .about-section h1 {
-  font-size: 52px;
+  font-size: 3.5rem;
   color: #333;
   margin-bottom: 25px;
   position: relative;
@@ -84,13 +79,12 @@
   transform: translateY(-50%);
   width: 5px;
   height: 30px;
-  /* UPDATED: Pink gradient to match theme */
   background: linear-gradient(135deg, #ff8fa3 0%, #ffc8d2 100%);
   border-radius: 3px;
 }
 
 .about-section h2 {
-  font-size: 28px;
+  font-size: 2rem;
   color: #333;
   margin-bottom: 15px;
   position: relative;
@@ -98,7 +92,7 @@
 }
 
 .about-section p {
-  font-size: 16px;
+  font-size: 1.1rem;
   color: #555;
   line-height: 1.8;
   text-align: justify;
@@ -112,7 +106,6 @@
 }
 
 .value-item {
-  /* UPDATED: Lighter pink gradient for value items */
   background: linear-gradient(135deg, #fee2e2 0%, #ffc8d2 100%); 
   padding: 25px;
   border-radius: 12px;
@@ -125,21 +118,30 @@
   box-shadow: 0 8px 20px rgba(255, 107, 107, 0.25);
 }
 
+.value-item .value-icon {
+  height: 60px; 
+  width: 60px; 
+  object-fit: contain; 
+  margin-bottom: 15px;
+  display: block;
+  margin-left: auto; 
+  margin-right: auto; 
+}
+
 .value-item h3 {
-  font-size: 30px;
+  font-size: 1.5rem;
   color: #333;
   margin-bottom: 10px;
 }
 
 .value-item p {
-  font-size: 25px;
+  font-size: 1rem;
   color: #3d3c3c;
   line-height: 1.6;
   text-align: left;
 }
 
 .cta-section {
-  /* UPDATED: Darker gradient with pink accent tones */
   background: linear-gradient(135deg, #2c2c2c 0%, #3d3c3c 100%);
   color: white;
   padding: 80px 60px;
@@ -165,7 +167,6 @@
 .cta-button {
   display: inline-block;
   padding: 18px 50px;
-  /* UPDATED: Pink button to match theme */
   background: #ff8fa3;
   color: white;
   text-decoration: none;
@@ -177,7 +178,6 @@
 }
 
 .cta-button:hover {
-  /* UPDATED: Lighter pink on hover */
   background: #ffc8d2;
   transform: translateY(-2px);
   box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);

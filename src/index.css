@@ -1,6 +1,5 @@
-/* src/index.css */
 
-/* Define color palette from the design */
+/*Define color palette from the design */
 :root {
   --primary-pink: #FF6B6B;
   --light-pink: #FFF5F5;
@@ -22,6 +21,10 @@ body {
   color: var(--dark-text);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -34,4 +37,96 @@ a {
 button {
   cursor: pointer;
   font-family: 'Inter', sans-serif;
+}
+
+/* Refresh Message Styles */
+.refresh-message {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ffa726 100%);
+  color: white;
+  padding: 15px 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  border-bottom: 3px solid rgba(255, 255, 255, 0.3);
+  animation: slideDown 0.5s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.refresh-message-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  gap: 15px;
+}
+
+.refresh-icon {
+  font-size: 24px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.refresh-message p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  flex: 1;
+  text-align: center;
+}
+
+.refresh-close-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 18px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.refresh-close-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+  .refresh-message-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+
+  .refresh-message p {
+    font-size: 14px;
+  }
+
+  .refresh-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
 }
