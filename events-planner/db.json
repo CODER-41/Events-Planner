@@ -1,0 +1,68 @@
+{
+  "services": [
+    {
+      "id": 1,
+      "name": "Videography and Photography",
+      "description": "Full-day coverage, including two photographers/videographers and professional editing.",
+      "cost": 20000,
+      "cost_unit": "full day",
+      "category": "Visuals",
+      "images": ["/images/16.png"]
+    },
+    {
+      "id": 2,
+      "name": "Tents and Seating Solutions",
+      "description": "Variety of tent sizes (marquee, dome) and seating options for up to 300 guests.",
+      "cost": 30000,
+      "cost_unit": "for a day",
+      "category": "Logistics",
+      "images": [
+        "/images/1.png",
+        "/images/2.png",
+        "/images/3.png",
+        "/images/4.png"
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Deco Setups",
+      "description": "Themed decor, floral arrangements, lighting, and stage design.",
+      "cost": 10000,
+      "cost_unit": "per event",
+      "category": "Aesthetics",
+      "images": [
+        "/images/5.png",
+        "/images/6.png",
+        "/images/7.png",
+        "/images/8.png"
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Sound and MC Services",
+      "description": "Professional sound system, DJ equipment, and an experienced Master of Ceremonies.",
+      "cost": 10000,
+      "cost_unit": "per event",
+      "category": "Entertainment",
+      "images": [
+        "/images/13.png",
+        "/images/14.png",
+        "/images/15.png"
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Catering",
+      "description": "Full-service catering with customizable menu options for any dietary need.",
+      "cost": 1500,
+      "cost_unit": "per person",
+      "category": "Catering",
+      "images": [
+        "/images/9.png",
+        "/images/10.png",
+        "/images/11.png",
+        "/images/12.png"
+      ]
+    }
+  ]
+}
