@@ -1,27 +1,26 @@
-// src/components/ServiceCard.js
+// src/components/ServiceCard.js (FINAL VERSION)
 
 import React from 'react';
 
-function ServiceCard({ service }) {
-  // Destructuring properties from the service object
+function ServiceCard({ service, onServiceClick }) { 
   const { name, description, cost, category } = service;
-
-  // 💰 CHANGE MADE HERE: Use 'Ksh' instead of '$' and apply localization logic
-  let costDisplay;
-  if (cost === 45) {
-    // Logic for catering price (45 per person)
-    costDisplay = 'Ksh 45 per person';
-  } else {
-    // Standard price display with comma formatting for thousands
-    costDisplay = `Ksh ${cost.toLocaleString('en-KE')}`;
-  }
+  
+  // Displays prices in Ksh, formatted with commas
+  const costDisplay = cost === 45 ? 'Ksh 45 per person' : `Ksh ${cost.toLocaleString('en-KE')}`;
 
   return (
-    <div className="service-card" style={{ border: '1px solid #ccc', padding: '15px', margin: '10px', borderRadius: '5px' }}>
+    <div 
+      className="service-card clickable" 
+      onClick={() => onServiceClick(service)} // Triggers image display
+      style={{ 
+        cursor: 'pointer', // Indicates it's clickable
+        /* ... existing styles ... */ 
+      }} 
+    >
       <h3>{name}</h3>
       {category && <p style={{ fontSize: '0.9em', color: '#555' }}>Category: {category}</p>}
       <p>{description}</p>
-      <p className="cost-info">Price: {costDisplay}</p>
+      <p className="cost-info">Price: **{costDisplay}**</p>
     </div>
   );
 }
