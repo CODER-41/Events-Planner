@@ -6,6 +6,20 @@
       "email": "djk14530@gmail.com",
       "password": "djk14530@Jerry",
       "nationalId": "41850208"
+    },
+    {
+      "id": "116a",
+      "name": "James Orengo",
+      "email": "James@gmail.com",
+      "password": "james234",
+      "nationalId": "42345354"
+    },
+    {
+      "id": "14ab",
+      "name": "Esther Kuria",
+      "email": "estherkuria@gmail.com",
+      "password": "estherkuria",
+      "nationalId": "23543423"
     }
   ],
   "bookings": []

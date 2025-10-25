@@ -23,20 +23,20 @@ const Signup = ({ setUser }) => {
       return;
     }
     try {
-      const response = await fetch('http://localhost:3001/users');
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/users`);
       const users = await response.json();
       const existingUser = users.find(u => u.email === email || u.nationalId === nationalId);
       if (existingUser) {
         setError('Email or National ID already exists');
         return;
       }
-      const newUser = {
+      const newUser = { // json-server will create the id
         name,
         email,
         password,
         nationalId
       };
-      const postResponse = await fetch('http://localhost:3001/users', {
+      const postResponse = await fetch(`${process.env.REACT_APP_API_URL}/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
