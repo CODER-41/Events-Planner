@@ -110,6 +110,16 @@ const Dashboard = () => {
 
   const handleBooking = async (e) => {
     e.preventDefault();
+
+    // Re-validate date on submission to be absolutely sure
+    if (dateError) {
+      // The error popup is already showing, so we just stop.
+      return;
+    }
+    if (!eventDate) {
+      setDateError('Please select an event date.');
+      return;
+    }
     setIsLoading(true);
     const finalEventType = eventType === 'Other' && customEventType ? customEventType : eventType;
     const newBooking = {
@@ -486,14 +496,11 @@ const Dashboard = () => {
                   <label>Event Date *</label>
                   <input
                     type="date"
+                    min={new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0]}
                     value={eventDate}
-                    onChange={(e) => {
-                      setEventDate(e.target.value);
-                      setDateError(''); // Clear error on change
-                    }}
+                    onChange={handleDateChange}
                     required
                   />
-                  {dateError && <p className="error-message">{dateError}</p>}
                 </div>
                 <div className="form-group">
                   <label>Event Location *</label>
@@ -693,14 +700,11 @@ const Dashboard = () => {
                   <label>Event Date *</label>
                   <input
                     type="date"
+                    min={new Date(new Date().setDate(new Date().getDate() + 1)).toISOString().split('T')[0]}
                     value={eventDate}
-                    onChange={(e) => {
-                      setEventDate(e.target.value);
-                      setDateError(''); // Clear error on change
-                    }}
+                    onChange={handleDateChange}
                     required
                   />
-                  {dateError && <p className="error-message">{dateError}</p>}
                 </div>
                 <div className="form-group">
                   <label>Event Location *</label>
