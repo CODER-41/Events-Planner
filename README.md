@@ -74,39 +74,45 @@ The dashboard is the central hub for logged-in users, organized into several tab
 
 ## ⚙️ Getting Started
 
-To run this project locally, follow these steps:
+To get a local copy up and running, follow these simple steps.
 
 ### Prerequisites
 
-- Node.js and npm (or yarn) installed on your machine.
+Make sure you have Node.js and npm installed on your machine.
+*   Node.js
+*   npm (comes with Node.js)
 
-### Installation & Setup
+### Installation
 
-1.  **Clone the repository:**
-    ```sh
+1.  **Clone the repository** (replace `your-username` with the actual GitHub username/organization):
+    ```bash
     git clone https://github.com/your-username/Events-Planner.git
+    ```
+2.  **Navigate to the project directory**:
+    ```bash
     cd Events-Planner
     ```
-
-2.  **Install dependencies:**
-    ```sh
+3.  **Install NPM packages**:
+    ```bash
     npm install
     ```
 
-3.  **Set up the mock backend:**
-    The project uses `json-server` to simulate a backend. The data is stored in `db.json`. To start the server, run:
-    ```sh
-    npx json-server --watch db.json --port 3001
-    ```
+### Running the Application
 
-4.  **Start the React application:**
-    In a new terminal, run the following command:
-    ```sh
+You'll need to run two processes in separate terminals: the backend API server and the frontend React application.
+
+1.  **Start the JSON API Server**:
+    This command starts the mock backend, watching for changes in the `db.json` file.
+    ```bash
+    npm run server
+    ```
+2.  **Start the React App**:
+    This command starts the frontend development server.
+    ```bash
     npm start
     ```
 
-5.  **Open in your browser:**
-    The application will be running at `http://localhost:3000`.
+Your application will be available at `http://localhost:3000`, and the API server will be running at `http://localhost:3001`.
 
 ---
 
