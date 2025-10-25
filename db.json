@@ -1,26 +1,26 @@
 {
   "users": [
     {
-      "id": "4d37",
-      "name": "Jeremiah Koske",
-      "email": "djk14530@gmail.com",
-      "password": "djk14530@Jerry",
-      "nationalId": "41850208"
-    },
-    {
-      "id": "116a",
-      "name": "James Orengo",
-      "email": "James@gmail.com",
-      "password": "james234",
-      "nationalId": "42345354"
-    },
-    {
-      "id": "14ab",
-      "name": "Esther Kuria",
-      "email": "estherkuria@gmail.com",
-      "password": "estherkuria",
-      "nationalId": "23543423"
+      "id": "b9f7",
+      "name": "Victore Abraham",
+      "email": "victor@gmail.com",
+      "password": "vic",
+      "nationalId": "34234534"
     }
   ],
-  "bookings": []
+  "bookings": [
+    {
+      "id": 1761389480691,
+      "userId": "b9f7",
+      "eventType": "Corporate",
+      "eventDate": "2025-10-28",
+      "eventDetails": "fggf",
+      "eventLocation": "Homabay",
+      "approxAttendees": "150",
+      "budget": "30000",
+      "contactPhone": "0756345243",
+      "specialReq": "fggfg",
+      "status": "Agent will be in touch soon"
+    }
+  ]
 }

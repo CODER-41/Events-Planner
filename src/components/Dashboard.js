@@ -74,13 +74,13 @@ const Dashboard = () => {
       fetch(`${process.env.REACT_APP_API_URL}/bookings`)
         .then(response => response.json())
         .then(data => {
-          const userBookings = data.filter(booking => booking.userId === JSON.parse(loggedUser).id);
-          // Update any existing 'Pending' statuses to the new message
-          const updatedBookings = userBookings.map(booking => ({
-            ...booking,
-            status: booking.status === 'Pending' ? 'Agent will be in touch soon' : booking.status
-          }));
-          setBookings(updatedBookings);
+      const userBookings = data.filter(booking => booking.userId === JSON.parse(loggedUser).id);
+      // Update any existing 'Pending' statuses to the new message
+      const updatedBookings = userBookings.map(booking => ({
+        ...booking,
+        status: booking.status === 'Pending' ? 'Agent will be in touch soon' : booking.status
+      }));
+      setBookings(updatedBookings);
         })
         .catch(error => console.error('Error fetching bookings:', error));
     }
@@ -123,6 +123,7 @@ const Dashboard = () => {
     setIsLoading(true);
     const finalEventType = eventType === 'Other' && customEventType ? customEventType : eventType;
     const newBooking = {
+      id: Date.now(),
       userId: user.id,
       eventType: finalEventType,
       eventDate,
