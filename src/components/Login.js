@@ -13,7 +13,7 @@ const Login = ({ setUser }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:3001/users');
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/users`);
       const users = await response.json();
       const user = users.find(u => u.email === email && u.password === password);
       if (user) {
