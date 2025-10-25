@@ -21,7 +21,7 @@ function AppContent() {
   }, []);
 
   return (
-    <div className="App">
+    <div className="App" style={{ minWidth: '1200px' }}>
       <Navbar user={user} setUser={setUser} />
       <Routes>
         <Route path="/" element={<Home />} />
