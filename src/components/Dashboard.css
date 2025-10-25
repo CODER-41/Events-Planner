@@ -820,6 +820,13 @@
   box-shadow: 0 6px 20px rgba(149, 165, 166, 0.4);
 }
 
+.error-message {
+  color: #ff4757;
+  font-weight: 600;
+  margin-top: 10px;
+  text-align: center;
+}
+
 .loading-spinner {
   display: inline-block;
   width: 20px;

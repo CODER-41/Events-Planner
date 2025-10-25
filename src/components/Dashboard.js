@@ -23,9 +23,12 @@ const Dashboard = () => {
   const [deletingBookingId, setDeletingBookingId] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
   const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
+  const [dateError, setDateError] = useState('');
   const [showDeleteAccountLoading, setShowDeleteAccountLoading] = useState(false);
   const [showGoodbyeMessage, setShowGoodbyeMessage] = useState(false);
+  const [deleteAccountError, setDeleteAccountError] = useState('');
   const [weatherData, setWeatherData] = useState({});
   const [weatherLoading, setWeatherLoading] = useState({});
   const [trafficData, setTrafficData] = useState({});
@@ -68,7 +71,7 @@ const Dashboard = () => {
     } else {
       setUser(JSON.parse(loggedUser));
       // Load bookings from API
-      fetch('http://localhost:3001/bookings')
+      fetch(`${process.env.REACT_APP_API_URL}/bookings`)
         .then(response => response.json())
         .then(data => {
           const userBookings = data.filter(booking => booking.userId === JSON.parse(loggedUser).id);
@@ -85,10 +88,22 @@ const Dashboard = () => {
 
   const handleBooking = async (e) => {
     e.preventDefault();
+
+    const selectedDate = new Date(eventDate);
+    const today = new Date();
+    // Set hours to 0 to compare dates only, not time
+    today.setHours(0, 0, 0, 0);
+    selectedDate.setHours(0, 0, 0, 0);
+
+    if (selectedDate <= today) {
+      setDateError('Date error: Event date must be in the future.');
+      return; // Stop the booking process
+    }
+    setDateError(''); // Clear any previous error
+
     setIsLoading(true);
     const finalEventType = eventType === 'Other' && customEventType ? customEventType : eventType;
     const newBooking = {
-      id: Date.now(),
       userId: user.id,
       eventType: finalEventType,
       eventDate,
@@ -102,7 +117,7 @@ const Dashboard = () => {
     };
     try {
       // POST new booking to API
-      const response = await fetch('http://localhost:3001/bookings', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/bookings`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -137,26 +152,45 @@ const Dashboard = () => {
   const confirmDeleteBooking = async () => {
     if (!deletingBookingId) return;
     setDeleteLoading(true);
+    setDeleteError('');
     try {
-      const response = await fetch(`http://localhost:3001/bookings/${deletingBookingId}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/bookings/${deletingBookingId}`, {
         method: 'DELETE',
       });
-      if (response.ok) {
+      if (response.ok) { // Server successfully deleted the booking (e.g., 200 OK, 204 No Content)
+        // Filter out the booking from the state
+        const updatedBookings = bookings.filter(booking => booking.id !== deletingBookingId);
+        setBookings(updatedBookings);
+        // Close the modal and show success message
+        setShowDeleteModal(false);
+        setDeletingBookingId(null);
+        setShowDeleteSuccess(true);
+        setTimeout(() => {
+          setShowDeleteSuccess(false);
+        }, 3000);
+      } else if (response.status === 404) {
+        // Booking was not found on the server, implying it's already deleted or never existed.
+        // From the user's perspective, it's effectively deleted.
+        // We still update the UI to reflect this.
         const updatedBookings = bookings.filter(booking => booking.id !== deletingBookingId);
         setBookings(updatedBookings);
         setShowDeleteModal(false);
         setDeletingBookingId(null);
-        setDeleteLoading(false);
         setShowDeleteSuccess(true);
         setTimeout(() => {
           setShowDeleteSuccess(false);
         }, 3000);
       } else {
-        throw new Error('Failed to delete booking');
+        // Handle other server errors (e.g., 500 Internal Server Error)
+        const errorText = await response.text().catch(() => 'Unknown error'); // Try to get error message
+        throw new Error(`Server error: ${response.status} - ${errorText || 'Failed to delete booking'}`);
       }
     } catch (error) {
       console.error('Error deleting booking:', error);
-      setDeleteLoading(false);
+      setDeleteError(`Failed to delete booking: ${error.message}. Please try again.`);
+      setShowDeleteModal(false);
+    } finally {
+      setDeleteLoading(false); // Always reset loading state
     }
   };
 
@@ -172,18 +206,19 @@ const Dashboard = () => {
   const confirmDeleteAccount = async () => {
     setShowDeleteAccountModal(false);
     setShowDeleteAccountLoading(true);
+    setDeleteAccountError('');
 
     try {
       // Delete all user bookings first
       const userBookings = bookings.filter(booking => booking.userId === user.id);
       for (const booking of userBookings) {
-        await fetch(`http://localhost:3001/bookings/${booking.id}`, {
+        await fetch(`${process.env.REACT_APP_API_URL}/bookings/${booking.id}`, {
           method: 'DELETE',
         });
       }
 
       // Delete user account
-      await fetch(`http://localhost:3001/users/${user.id}`, {
+      await fetch(`${process.env.REACT_APP_API_URL}/users/${user.id}`, {
         method: 'DELETE',
       });
 
@@ -199,6 +234,7 @@ const Dashboard = () => {
       }, 3000);
     } catch (error) {
       console.error('Error deleting account:', error);
+      setDeleteAccountError('Failed to delete account. Please try again.');
       setShowDeleteAccountLoading(false);
     }
   };
@@ -442,9 +478,13 @@ const Dashboard = () => {
                   <input
                     type="date"
                     value={eventDate}
-                    onChange={(e) => setEventDate(e.target.value)}
+                    onChange={(e) => {
+                      setEventDate(e.target.value);
+                      setDateError(''); // Clear error on change
+                    }}
                     required
                   />
+                  {dateError && <p className="error-message">{dateError}</p>}
                 </div>
                 <div className="form-group">
                   <label>Event Location *</label>
@@ -645,9 +685,13 @@ const Dashboard = () => {
                   <input
                     type="date"
                     value={eventDate}
-                    onChange={(e) => setEventDate(e.target.value)}
+                    onChange={(e) => {
+                      setEventDate(e.target.value);
+                      setDateError(''); // Clear error on change
+                    }}
                     required
                   />
+                  {dateError && <p className="error-message">{dateError}</p>}
                 </div>
                 <div className="form-group">
                   <label>Event Location *</label>
@@ -1017,12 +1061,13 @@ const Dashboard = () => {
                 <p><strong>You want to delete an Event that you had booked.</strong></p>
                 <p>Please note that this action is not reversible as because when you delete the Booking, it will also be deleted from our server.</p>
                 <p>Would you wish to continue deleting the Event that you had booked?</p>
+                {deleteError && <p className="error-message">{deleteError}</p>}
               </div>
               <div className="modal-footer">
-                <button className="delete-confirm-btn" onClick={confirmDeleteBooking} disabled={deleteLoading}>
+                <button type="button" className="delete-confirm-btn" onClick={confirmDeleteBooking} disabled={deleteLoading}>
                   {deleteLoading ? 'Deleting...' : 'Yes'}
                 </button>
-                <button className="delete-cancel-btn" onClick={cancelDeleteBooking} disabled={deleteLoading}>
+                <button type="button" className="delete-cancel-btn" onClick={cancelDeleteBooking} disabled={deleteLoading}>
                   No
                 </button>
               </div>
@@ -1070,6 +1115,7 @@ const Dashboard = () => {
                   </p>
                   <div className="tears"><FaSadTear /><FaSadTear /><FaSadTear /></div>
                 </div>
+                {deleteAccountError && <p className="error-message">{deleteAccountError}</p>}
               </div>
               <div className="modal-footer">
                 <button className="emotional-delete-btn" onClick={confirmDeleteAccount}>

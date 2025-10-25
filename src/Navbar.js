@@ -1,17 +1,9 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import './Navbar.css';
 import logo from './images/logo.webp';
 
 const Navbar = ({ user, setUser }) => {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    setUser(null);
-    navigate('/');
-  };
-
   return (
     <nav className="navbar">
       <Link to="/" className="navbar__logo">
@@ -26,6 +18,7 @@ const Navbar = ({ user, setUser }) => {
         <li><a href="#contact">Contact</a></li>
       </ul>
       <div className="navbar__auth">
+        {/* Only show Login and Sign Up if no user is logged in */}
         {!user && (
           <>
             <Link to="/login" className="navbar__link">Login</Link>
