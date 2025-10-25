@@ -25,6 +25,7 @@ const Dashboard = () => {
   const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
   const [deleteError, setDeleteError] = useState('');
   const [showDeleteAccountModal, setShowDeleteAccountModal] = useState(false);
+  const [dateError, setDateError] = useState(''); // This will now hold the popup message
   const [showDeleteAccountLoading, setShowDeleteAccountLoading] = useState(false);
   const [showGoodbyeMessage, setShowGoodbyeMessage] = useState(false);
   const [deleteAccountError, setDeleteAccountError] = useState('');
@@ -85,12 +86,33 @@ const Dashboard = () => {
     }
   }, [navigate]);
 
+  const handleDateChange = (e) => {
+    const selectedDateValue = e.target.value;
+    setEventDate(selectedDateValue);
+
+    if (!selectedDateValue) {
+      setDateError('');
+      return;
+    }
+
+    const selectedDate = new Date(selectedDateValue);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Compare date part only
+
+    if (selectedDate < today) {
+      setDateError('You must choose a future date for the event.');
+    } else if (selectedDate.getTime() === today.getTime()) {
+      setDateError('We cannot schedule and arrange your event on the same day. Please insert a future date.');
+    } else {
+      setDateError('');
+    }
+  };
+
   const handleBooking = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     const finalEventType = eventType === 'Other' && customEventType ? customEventType : eventType;
     const newBooking = {
-      id: Date.now(),
       userId: user.id,
       eventType: finalEventType,
       eventDate,
@@ -144,35 +166,40 @@ const Dashboard = () => {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/bookings/${deletingBookingId}`, {
         method: 'DELETE',
       });
-      if (response.ok) {
+      if (response.ok) { // Server successfully deleted the booking (e.g., 200 OK, 204 No Content)
+        // Filter out the booking from the state
         const updatedBookings = bookings.filter(booking => booking.id !== deletingBookingId);
         setBookings(updatedBookings);
+        // Close the modal and show success message
         setShowDeleteModal(false);
         setDeletingBookingId(null);
-        setDeleteLoading(false);
         setShowDeleteSuccess(true);
         setTimeout(() => {
           setShowDeleteSuccess(false);
         }, 3000);
       } else if (response.status === 404) {
-        // Handle case where booking is already deleted on the server
+        // Booking was not found on the server, implying it's already deleted or never existed.
+        // From the user's perspective, it's effectively deleted.
+        // We still update the UI to reflect this.
         const updatedBookings = bookings.filter(booking => booking.id !== deletingBookingId);
         setBookings(updatedBookings);
         setShowDeleteModal(false);
         setDeletingBookingId(null);
-        setDeleteLoading(false);
         setShowDeleteSuccess(true);
         setTimeout(() => {
           setShowDeleteSuccess(false);
         }, 3000);
       } else {
-        throw new Error('Failed to delete booking');
+        // Handle other server errors (e.g., 500 Internal Server Error)
+        const errorText = await response.text().catch(() => 'Unknown error'); // Try to get error message
+        throw new Error(`Server error: ${response.status} - ${errorText || 'Failed to delete booking'}`);
       }
     } catch (error) {
       console.error('Error deleting booking:', error);
-      setDeleteError('Failed to delete booking. Please try again.');
+      setDeleteError(`Failed to delete booking: ${error.message}. Please try again.`);
       setShowDeleteModal(false);
-      setDeleteLoading(false);
+    } finally {
+      setDeleteLoading(false); // Always reset loading state
     }
   };
 
@@ -460,9 +487,13 @@ const Dashboard = () => {
                   <input
                     type="date"
                     value={eventDate}
-                    onChange={(e) => setEventDate(e.target.value)}
+                    onChange={(e) => {
+                      setEventDate(e.target.value);
+                      setDateError(''); // Clear error on change
+                    }}
                     required
                   />
+                  {dateError && <p className="error-message">{dateError}</p>}
                 </div>
                 <div className="form-group">
                   <label>Event Location *</label>
@@ -524,7 +555,7 @@ const Dashboard = () => {
                     required
                   ></textarea>
                 </div>
-                  <button type="submit" className="book-btn" disabled={isLoading}>
+                  <button type="submit" className="book-btn" disabled={isLoading || !!dateError}>
                     {isLoading ? (
                       <>
                         <span className="spinner"></span> Booking...
@@ -663,9 +694,13 @@ const Dashboard = () => {
                   <input
                     type="date"
                     value={eventDate}
-                    onChange={(e) => setEventDate(e.target.value)}
+                    onChange={(e) => {
+                      setEventDate(e.target.value);
+                      setDateError(''); // Clear error on change
+                    }}
                     required
                   />
+                  {dateError && <p className="error-message">{dateError}</p>}
                 </div>
                 <div className="form-group">
                   <label>Event Location *</label>
@@ -727,7 +762,7 @@ const Dashboard = () => {
                     required
                   ></textarea>
                 </div>
-                  <button type="submit" className="book-btn" disabled={isLoading}>
+                  <button type="submit" className="book-btn" disabled={isLoading || !!dateError}>
                     {isLoading ? (
                       <>
                         <span className="spinner"></span> Booking...
@@ -1024,6 +1059,23 @@ const Dashboard = () => {
           </div>
         )}
 
+        {dateError && (
+          <div className="modal-overlay">
+            <div className="delete-modal-content">
+              <div className="modal-header">
+                <h2>⚠️ Date Selection Error</h2>
+                <button className="close-modal" onClick={() => setDateError('')}>×</button>
+              </div>
+              <div className="modal-body">
+                <p>{dateError}</p>
+              </div>
+              <div className="modal-footer">
+                <button className="modal-btn" onClick={() => setDateError('')}>Okay</button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {showDeleteModal && (
           <div className="modal-overlay">
             <div className="delete-modal-content">
@@ -1038,10 +1090,10 @@ const Dashboard = () => {
                 {deleteError && <p className="error-message">{deleteError}</p>}
               </div>
               <div className="modal-footer">
-                <button className="delete-confirm-btn" onClick={confirmDeleteBooking} disabled={deleteLoading}>
+                <button type="button" className="delete-confirm-btn" onClick={confirmDeleteBooking} disabled={deleteLoading}>
                   {deleteLoading ? 'Deleting...' : 'Yes'}
                 </button>
-                <button className="delete-cancel-btn" onClick={cancelDeleteBooking} disabled={deleteLoading}>
+                <button type="button" className="delete-cancel-btn" onClick={cancelDeleteBooking} disabled={deleteLoading}>
                   No
                 </button>
               </div>
