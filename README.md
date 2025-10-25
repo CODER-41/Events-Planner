@@ -4,7 +4,7 @@ Welcome to the official repository for the Snakepiece Event House Kenya web appl
 
 ## 🚀 Live Demo
 
-*(You can add a link to your live application here once it's deployed.)*
+https://snakepiece-events.onrender.com/
 
 ## ✨ Core Functionalities
 
