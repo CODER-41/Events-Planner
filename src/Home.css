@@ -5,7 +5,7 @@
   min-height: 90vh; 
   background-color: var(--light-pink);
   padding: 3rem 6%;
-  overflow: hidden; 
+  /* overflow: hidden; */
 }
 
 .hero__content {
@@ -221,18 +221,18 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  gap: 5rem; /* Increased gap for more breathing room */
+  gap: 5rem; 
 }
 
 .partners__logos img {
-  height: 60px; /* Increased logo size */
-  max-width: 150px; /* Prevent very wide logos from taking too much space */
-  opacity: 1; /* Make logos fully visible */
+  height: 60px; 
+  max-width: 150px; 
+  opacity: 1; 
   transition: transform 0.2s ease-in-out;
 }
 
 .partners__logos img:hover {
-  transform: scale(1.05); /* Add a slight zoom effect on hover */
+  transform: scale(1.05); 
 }
 
 /* Animations */
@@ -421,8 +421,8 @@
 
 .ranking-card img {
   width: 100%;
-  height: 250px; /* Increased height */
-  object-fit: contain; /* Changed to contain to show the full image */
+  height: 250px; 
+  object-fit: contain; 
   border-radius: 15px;
   margin-bottom: 1.5rem;
   border: 3px solid rgba(255, 107, 157, 0.3);

@@ -13,18 +13,14 @@ const Navbar = ({ user, setUser }) => {
       <ul className="navbar__links">
         <li><Link to="/">Home</Link></li>
         <li><Link to="/signup">Services</Link></li>
+        <li><Link to="/signup">Prices</Link></li>
         <li><a href="#rankings">Rankings</a></li>
         <li><a href="#about">About</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
       <div className="navbar__auth">
-        {/* Only show Login and Sign Up if no user is logged in */}
-        {!user && (
-          <>
-            <Link to="/login" className="navbar__link">Login</Link>
-            <Link to="/signup" className="navbar__link navbar__signup">Sign Up</Link>
-          </>
-        )}
+        <Link to="/login" className="navbar__link">Login</Link>
+        <Link to="/signup" className="navbar__link navbar__signup">Sign Up</Link>
       </div>
     </nav>
   );

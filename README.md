@@ -4,7 +4,7 @@ Welcome to the official repository for the Snakepiece Event House Kenya web appl
 
 ## 🚀 Live Demo
 
-*(You can add a link to your live application here once it's deployed.)*
+https://snakepiece-events.onrender.com/
 
 ## ✨ Core Functionalities
 
@@ -26,16 +26,21 @@ This web application is packed with features to provide a comprehensive and user
 
 The dashboard is the central hub for logged-in users, organized into several tabs for easy navigation.
 
+#### ⚠️ IMPORTANT NOTICE Tab
+- **Warning Message**: Informs users that bookings cannot be deleted once confirmed, to maintain record integrity.
+- **Contact Link**: Direct link to WhatsApp for changes or modifications.
+
 #### 🏠 Dashboard Tab
 - **Personalized Welcome**: Greets the user by name.
-- **Profile Overview**: Displays the user's name, email, and National ID.
-- **Event Booking Form**: A comprehensive form to book new events.
+- **Profile Overview**: Displays the user's name, email, and National ID (non-editable).
+- **Event Booking Form**: A comprehensive form to book new events with validation (future dates only).
 - **Your Bookings**: A list of all events booked by the user, showing details and current status.
-- **Services Overview**: A grid showcasing all the event services offered by the company.
+- **Services Overview**: A grid showcasing all the event services offered by the company with pricing.
+- **Team Credits**: Acknowledges the development team.
 
 #### 📅 Booking Hub Tab
 - **Step-by-Step Guide**: Clear instructions on how to book an event.
-- **Advance Booking Notice**: A friendly (and humorous) reminder for users to book their events at least one week in advance.
+- **Advance Booking Notice**: A humorous reminder for users to book their events at least one week in advance.
 - **Full Booking Capabilities**: Includes the event booking form and the user's booking list.
 
 #### 🗣️ What Our Clients Say (Testimonials)
@@ -52,25 +57,28 @@ The dashboard is the central hub for logged-in users, organized into several tab
 
 ### 4. Event Booking & Management
 - **Detailed Booking Form**: Users can specify:
-  - Event Type (with an "Other" option for custom types)
-  - Event Date & Location
+  - Event Type (with an "Other" option for custom types, max 200 characters)
+  - Event Date & Location (future dates only, no same-day bookings)
   - Number of Attendees
-  - Budget
-  - Contact Information
-  - Special Requirements
+  - Budget (in KES)
+  - Contact Phone Number
+  - Event Details & Special Requirements
 - **Booking Status**: After booking, the status is set to "Agent will be in touch soon," keeping the user informed.
-- **Booking Deletion**: Users can cancel/delete their bookings directly from the dashboard.
-- **Confirmation Modals**: The app uses a series of well-designed modals to confirm actions like successful bookings and deletions.
+- **Booking Deletion**: Users can cancel/delete their bookings directly from the dashboard (with confirmation modal).
+- **View Booking**: Modal to view booking details (no editing capability).
+- **Confirmation Modals**: The app uses well-designed modals to confirm actions like successful bookings, deletions, and account removal.
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React.js
+- **Frontend**: React.js (v19.2.0)
 - **Styling**: CSS (with custom properties, Flexbox, and Grid)
-- **Routing**: React Router
+- **Routing**: React Router DOM (v7.9.4)
 - **API Server**: `json-server` for mock backend and data persistence.
+- **Icons**: React Icons (v5.5.0) and Font Awesome
 - **APIs**:
   - OpenWeatherMap API for weather data.
   - TomTom API for traffic data.
+- **Additional Libraries**: Axios for HTTP requests, Concurrently for running multiple scripts.
 
 ## ⚙️ Getting Started
 
@@ -84,7 +92,7 @@ Make sure you have Node.js and npm installed on your machine.
 
 ### Installation
 
-1.  **Clone the repository** (replace `your-username` with the actual GitHub username/organization):
+1.  **Clone the repository**:
     ```bash
     git clone https://github.com/your-username/Events-Planner.git
     ```
@@ -107,12 +115,20 @@ You'll need to run two processes in separate terminals: the backend API server a
     npm run server
     ```
 2.  **Start the React App**:
-    This command starts the frontend development server.
+    This command starts the frontend development server on port 3002.
     ```bash
     npm start
     ```
 
-Your application will be available at `http://localhost:3000`, and the API server will be running at `http://localhost:3001`.
+Your application will be available at `http://localhost:3002`, and the API server will be running at `http://localhost:3001`.
+
+### Environment Variables
+
+Create a `.env` file in the root directory and add your API keys:
+```
+REACT_APP_API_URL=http://localhost:3001
+# Add your OpenWeatherMap and TomTom API keys here if needed
+```
 
 ---
 

@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './Navbar';
 import Home from './Home';
-import Login from './components/Login';
-import Signup from './components/Signup';
+import Auth from './components/Auth';
 import Dashboard from './components/Dashboard';
+import BookingDetails from './components/BookingDetails';
 
 function AppContent() {
   const [user, setUser] = useState(null);
@@ -21,13 +21,14 @@ function AppContent() {
   }, []);
 
   return (
-    <div className="App" style={{ minWidth: '1200px' }}>
+    <div className="App">
       <Navbar user={user} setUser={setUser} />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login setUser={setUser} />} />
-        <Route path="/signup" element={<Signup setUser={setUser} />} />
+        <Route path="/login" element={<Auth setUser={setUser} isLoginInitial={true} />} />
+        <Route path="/signup" element={<Auth setUser={setUser} isLoginInitial={false} />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/bookings/:id" element={<BookingDetails />} />
       </Routes>
     </div>
   );

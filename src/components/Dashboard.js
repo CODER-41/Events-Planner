@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaExclamationTriangle, FaCalendarAlt, FaMagic, FaFilm, FaTshirt, FaSmile, FaRocket, FaCode, FaPaintBrush, FaCrown, FaCloudRain, FaCar, FaSpinner, FaSadTear, FaHeart, FaHeartBroken } from 'react-icons/fa';
+import { FaExclamationTriangle, FaCalendarAlt, FaMagic, FaFilm, FaTshirt, FaSmile, FaRocket, FaCode, FaPaintBrush, FaCrown, FaSadTear, FaHeart, FaHeartBroken } from 'react-icons/fa';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -15,7 +15,7 @@ const Dashboard = () => {
   const [specialReq, setSpecialReq] = useState('');
   const [customEventType, setCustomEventType] = useState('');
   const [bookings, setBookings] = useState([]);
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState('warning');
 
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -35,6 +35,23 @@ const Dashboard = () => {
   const [trafficLoading, setTrafficLoading] = useState({});
   const [expandedFAQs, setExpandedFAQs] = useState({});
   const navigate = useNavigate();
+
+  // Edit modal states
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingBooking, setEditingBooking] = useState(null);
+  const [editEventType, setEditEventType] = useState('');
+  const [editEventDate, setEditEventDate] = useState('');
+  const [editEventDetails, setEditEventDetails] = useState('');
+  const [editEventLocation, setEditEventLocation] = useState('');
+  const [editApproxAttendees, setEditApproxAttendees] = useState('');
+  const [editBudget, setEditBudget] = useState('');
+  const [editContactPhone, setEditContactPhone] = useState('');
+  const [editSpecialReq, setEditSpecialReq] = useState('');
+  const [editCustomEventType, setEditCustomEventType] = useState('');
+  const [editDateError, setEditDateError] = useState('');
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [showNoChangesModal, setShowNoChangesModal] = useState(false);
+  const [showClosePopup, setShowClosePopup] = useState(false);
 
   const testimonials = [
     { name: "Alice Johnson", testimonial: "Snakepiece made my wedding unforgettable! Every detail was perfect.", image: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&h=80&fit=crop&crop=face" },
@@ -108,6 +125,28 @@ const Dashboard = () => {
     }
   };
 
+  const handleEditDateChange = (e) => {
+    const selectedDateValue = e.target.value;
+    setEditEventDate(selectedDateValue);
+
+    if (!selectedDateValue) {
+      setEditDateError('');
+      return;
+    }
+
+    const selectedDate = new Date(selectedDateValue);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Compare date part only
+
+    if (selectedDate < today) {
+      setEditDateError('You must choose a future date for the event.');
+    } else if (selectedDate.getTime() === today.getTime()) {
+      setEditDateError('We cannot schedule and arrange your event on the same day. Please insert a future date.');
+    } else {
+      setEditDateError('');
+    }
+  };
+
   const handleBooking = async (e) => {
     e.preventDefault();
 
@@ -123,8 +162,9 @@ const Dashboard = () => {
     setIsLoading(true);
     const finalEventType = eventType === 'Other' && customEventType ? customEventType : eventType;
     const newBooking = {
-      id: Date.now(),
       userId: user.id,
+      nationalId: user.nationalId,
+      name: user.name,
       eventType: finalEventType,
       eventDate,
       eventDetails,
@@ -174,37 +214,15 @@ const Dashboard = () => {
     setDeleteLoading(true);
     setDeleteError('');
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/bookings/${deletingBookingId}`, {
-        method: 'DELETE',
-      });
-      if (response.ok) { // Server successfully deleted the booking (e.g., 200 OK, 204 No Content)
-        // Filter out the booking from the state
-        const updatedBookings = bookings.filter(booking => booking.id !== deletingBookingId);
-        setBookings(updatedBookings);
-        // Close the modal and show success message
-        setShowDeleteModal(false);
-        setDeletingBookingId(null);
-        setShowDeleteSuccess(true);
-        setTimeout(() => {
-          setShowDeleteSuccess(false);
-        }, 3000);
-      } else if (response.status === 404) {
-        // Booking was not found on the server, implying it's already deleted or never existed.
-        // From the user's perspective, it's effectively deleted.
-        // We still update the UI to reflect this.
-        const updatedBookings = bookings.filter(booking => booking.id !== deletingBookingId);
-        setBookings(updatedBookings);
-        setShowDeleteModal(false);
-        setDeletingBookingId(null);
-        setShowDeleteSuccess(true);
-        setTimeout(() => {
-          setShowDeleteSuccess(false);
-        }, 3000);
-      } else {
-        // Handle other server errors (e.g., 500 Internal Server Error)
-        const errorText = await response.text().catch(() => 'Unknown error'); // Try to get error message
-        throw new Error(`Server error: ${response.status} - ${errorText || 'Failed to delete booking'}`);
-      }
+      // Only remove from local state, keep on server for reference
+      setBookings(bookings.filter(booking => booking.id !== deletingBookingId));
+      // Close the modal and show success message
+      setShowDeleteModal(false);
+      setDeletingBookingId(null);
+      setShowDeleteSuccess(true);
+      setTimeout(() => {
+        setShowDeleteSuccess(false);
+      }, 3000);
     } catch (error) {
       console.error('Error deleting booking:', error);
       setDeleteError(`Failed to delete booking: ${error.message}. Please try again.`);
@@ -212,6 +230,46 @@ const Dashboard = () => {
     } finally {
       setDeleteLoading(false); // Always reset loading state
     }
+  };
+
+  const handleViewBooking = (booking) => {
+    setEditingBooking(booking);
+    setEditEventType(booking.eventType);
+    setEditEventDate(booking.eventDate);
+    setEditEventDetails(booking.eventDetails);
+    setEditEventLocation(booking.eventLocation);
+    setEditApproxAttendees(booking.approxAttendees);
+    setEditBudget(booking.budget);
+    setEditContactPhone(booking.contactPhone);
+    setEditSpecialReq(booking.specialReq);
+    setEditCustomEventType(booking.eventType === 'Other' ? booking.eventType : '');
+    setEditDateError('');
+    setShowEditModal(true);
+  };
+
+  const handleCloseBooking = () => {
+    setShowClosePopup(true);
+    setTimeout(() => {
+      setShowClosePopup(false);
+      setShowEditModal(false);
+      setEditingBooking(null);
+      setActiveTab('dashboard');
+    }, 3000);
+  };
+
+  const closeEditModal = () => {
+    setShowEditModal(false);
+    setEditingBooking(null);
+    setEditEventType('');
+    setEditEventDate('');
+    setEditEventDetails('');
+    setEditEventLocation('');
+    setEditApproxAttendees('');
+    setEditBudget('');
+    setEditContactPhone('');
+    setEditSpecialReq('');
+    setEditCustomEventType('');
+    setEditDateError('');
   };
 
   const cancelDeleteBooking = () => {
@@ -390,6 +448,11 @@ const Dashboard = () => {
         </div>
         <nav className="sidebar-nav">
           <ul>
+            <li className={activeTab === 'warning' ? 'active warning-tab' : 'warning-tab'}>
+              <button onClick={() => setActiveTab('warning')}>
+                <span className="warning-icon">⚠️</span> IMPORTANT NOTICE
+              </button>
+            </li>
             <li className={activeTab === 'dashboard' ? 'active' : ''}>
               <button onClick={() => setActiveTab('dashboard')}>Dashboard</button>
             </li>
@@ -590,7 +653,7 @@ const Dashboard = () => {
                         <p><strong>Budget:</strong> KES {booking.budget || 'N/A'}</p>
                         <p><strong>Details:</strong> {booking.eventDetails}</p>
                         <span className={`status ${booking.status.toLowerCase().replace(/\s+/g, '-')}`}>{booking.status}</span>
-                        <button onClick={() => handleDeleteBooking(booking.id)} className="delete-btn">Delete</button>
+                        <button onClick={() => handleViewBooking(booking)} className="view-btn">View booking</button>
                       </div>
                     ))}
                   </div>
@@ -603,47 +666,94 @@ const Dashboard = () => {
               <div className="services-list">
                 <div className="service-item">
                   <h3>PA Systems</h3>
-                  <p>Professional sound systems for clear audio at your events.</p>
+                  <p>Deliver crystal-clear sound at your event with our professional PA systems. Whether it's a small gathering or a large concert, we've got setups to suit every space.</p>
+                  <div className="pricing">From KSh 10,000 for small events to KSh 100,000+ for full-scale productions.</div>
                 </div>
                 <div className="service-item">
                   <h3>MC Services</h3>
-                  <p>Experienced Master of Ceremonies to host and manage your event.</p>
+                  <p>Keep your event lively and organized with our experienced Masters of Ceremony. We bring energy, flow, and professionalism to weddings, corporate events, and parties.</p>
+                  <div className="pricing">Typically KSh 15,000 – KSh 40,000 depending on duration and event type.</div>
                 </div>
                 <div className="service-item">
                   <h3>Videography</h3>
-                  <p>High-quality video recording and editing for your special moments.</p>
+                  <p>Capture every moment in high definition with our expert videography team. We handle filming, editing, and creative storytelling for weddings, concerts, and corporate functions.</p>
+                  <div className="pricing">Starting from KSh 15,000 for basic coverage; full packages from KSh 50,000+.</div>
                 </div>
                 <div className="service-item">
                   <h3>Photography</h3>
-                  <p>Capturing beautiful memories with professional photography services.</p>
+                  <p>Turn your moments into timeless memories with our professional photography services. We offer on-location shoots, event coverage, and creative editing.</p>
+                  <div className="pricing">From KSh 10,000 for short sessions to KSh 150,000+ for premium wedding packages.</div>
                 </div>
                 <div className="service-item">
                   <h3>Tents</h3>
-                  <p>Spacious and elegant tents for outdoor events and gatherings.</p>
+                  <p>Create the perfect outdoor atmosphere with our elegant and spacious tents. We offer various sizes and designs, complete with setup and décor.</p>
+                  <div className="pricing">From KSh 2,500 for small tents; larger marquees available on request.</div>
                 </div>
                 <div className="service-item">
                   <h3>Cars</h3>
-                  <p>Luxury vehicle rentals for transportation and special occasions.</p>
+                  <p>Arrive in style with our fleet of luxury vehicles for weddings, corporate events, and special occasions. Choose from sleek sedans to executive SUVs.</p>
+                  <div className="pricing">From KSh 10,000 – KSh 25,000 per day, depending on vehicle type.</div>
                 </div>
                 <div className="service-item">
                   <h3>Event Planning</h3>
-                  <p>Comprehensive event management and coordination services.</p>
+                  <p>Relax and let us handle every detail — from concept to execution. Our experienced planners ensure seamless coordination and unforgettable experiences.</p>
+                  <div className="pricing">Ranges from KSh 70,000 for small events to KSh 500,000+ for full wedding or corporate management.</div>
                 </div>
                 <div className="service-item">
                   <h3>Catering</h3>
-                  <p>Delicious food and beverage services tailored to your event needs.</p>
+                  <p>Delight your guests with fresh, flavorful dishes tailored to your event's theme and budget. We offer buffet setups, plated service, and live cooking stations.</p>
+                  <div className="pricing">Custom menus starting from KSh 8,500 per event (rates vary by guest count).</div>
                 </div>
                 <div className="service-item">
                   <h3>Decorations</h3>
-                  <p>Creative and thematic decorations to enhance your event atmosphere.</p>
+                  <p>Transform your venue with creative and thematic decorations that match your vision. We handle floral design, stage setup, and custom event styling.</p>
+                  <div className="pricing">From KSh 5,000 for simple décor to KSh 50,000+ for full event theming.</div>
                 </div>
                 <div className="service-item">
                   <h3>Lighting</h3>
-                  <p>Professional lighting setups for ambiance and visibility.</p>
+                  <p>Set the perfect mood with professional lighting installations. From soft ambient glows to full concert lighting, we tailor setups for every occasion.</p>
+                  <div className="pricing">From KSh 1,500 per unit; full lighting packages available on request.</div>
                 </div>
               </div>
             </div>
           </>
+        )}
+
+        {activeTab === 'warning' && (
+          <div className="warning-section">
+            <div className="warning-header">
+              <div className="warning-icon-large">⚠️</div>
+              <h2>IMPORTANT NOTICE</h2>
+              <div className="warning-subtitle">Please Read Carefully</div>
+            </div>
+            <div className="warning-content">
+              <div className="warning-message">
+                <div className="warning-highlight">
+                  <FaExclamationTriangle className="warning-triangle" />
+                  <h3>Once you have booked an event with us...</h3>
+                </div>
+                <div className="warning-details">
+                  <p className="warning-text">
+                    <strong>Note that you cannot delete it.</strong> This is to maintain the integrity of our records and ensure proper coordination with our event planning team.
+                  </p>
+                  <p className="warning-text">
+                    Once a booking is confirmed, it becomes part of our permanent records to guarantee that all arrangements, vendor bookings, and preparations proceed smoothly without any disruptions.
+                  </p>
+                  <p className="warning-text">
+                    If you need to make changes to your booking, please contact our team directly through the contact information provided. We will be happy to assist you with any modifications or updates.
+                  </p>
+                </div>
+                <div className="warning-actions">
+                  <button className="contact-btn" onClick={() => window.open('https://wa.me/254115481953', '_blank')}>
+                    <FaRocket /> Contact Us for Changes
+                  </button>
+                  <button className="understand-btn" onClick={() => setActiveTab('dashboard')}>
+                    I Understand
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
 
         {activeTab === 'booking' && (
@@ -778,13 +888,13 @@ const Dashboard = () => {
                   </button>
               </form>
             </div>
-            <div className="bookings-section">
-              <h3>Your Bookings</h3>
-              {bookings.length === 0 ? (
-                <p>No bookings yet. Book your first event!</p>
-              ) : (
-                <div className="bookings-list">
-                  {bookings.map(booking => (
+              <div className="bookings-section">
+                <h3>Your Bookings</h3>
+                {bookings.length === 0 ? (
+                  <p>No bookings yet. Book your first event!</p>
+                ) : (
+                  <div className="bookings-list">
+                    {bookings.map(booking => (
                       <div key={booking.id} className="booking-card">
                         <h3>{booking.eventType}</h3>
                         <p><strong>Date:</strong> {booking.eventDate}</p>
@@ -793,12 +903,12 @@ const Dashboard = () => {
                         <p><strong>Budget:</strong> KES {booking.budget || 'N/A'}</p>
                         <p><strong>Details:</strong> {booking.eventDetails}</p>
                         <span className={`status ${booking.status.toLowerCase().replace(/\s+/g, '-')}`}>{booking.status}</span>
-                        <button onClick={() => handleDeleteBooking(booking.id)} className="delete-btn">Delete</button>
+                        <button onClick={() => handleViewBooking(booking)} className="view-btn">View booking</button>
                       </div>
-                  ))}
-                </div>
-              )}
-            </div>
+                    ))}
+                  </div>
+                )}
+              </div>
           </div>
         )}
 
@@ -1183,6 +1293,111 @@ const Dashboard = () => {
                   <p>May your future be filled with joy and beautiful moments!</p>
                   <div className="hearts">💖💕💗💓💞</div>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showEditModal && (
+          <div className="modal-overlay">
+            <div className="edit-modal-content">
+              <div className="modal-header">
+                <h2>✨ View Booking ✨</h2>
+                <button className="close-modal" onClick={closeEditModal}>
+                  <span className="close-icon">✕</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <div className="view-form">
+                  <div className="form-grid">
+                    <div className="form-column">
+                      <div className="form-group">
+                        <label>Event Type</label>
+                        <div className="view-field">{editEventType}</div>
+                      </div>
+                      {editEventType === 'Other' && (
+                        <div className="form-group">
+                          <label>Custom Event Type</label>
+                          <div className="view-field">{editCustomEventType}</div>
+                        </div>
+                      )}
+                      <div className="form-group">
+                        <label>Event Date</label>
+                        <div className="view-field">{editEventDate}</div>
+                      </div>
+                      <div className="form-group">
+                        <label>Event Location</label>
+                        <div className="view-field">{editEventLocation}</div>
+                      </div>
+                      <div className="form-group">
+                        <label>Approximate Number of Attendees</label>
+                        <div className="view-field">{editApproxAttendees}</div>
+                      </div>
+                    </div>
+                    <div className="form-column">
+                      <div className="form-group">
+                        <label>Budget (in KES)</label>
+                        <div className="view-field">{editBudget}</div>
+                      </div>
+                      <div className="form-group">
+                        <label>Contact Phone Number</label>
+                        <div className="view-field">{editContactPhone}</div>
+                      </div>
+                      <div className="form-group">
+                        <label>Event Details</label>
+                        <div className="view-field">{editEventDetails}</div>
+                      </div>
+                      <div className="form-group">
+                        <label>Special Requirements</label>
+                        <div className="view-field">{editSpecialReq}</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" className="close-btn" onClick={handleCloseBooking}>
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {editDateError && (
+          <div className="modal-overlay">
+            <div className="delete-modal-content">
+              <div className="modal-header">
+                <h2>⚠️ Date Selection Error</h2>
+                <button className="close-modal" onClick={() => setEditDateError('')}>×</button>
+              </div>
+              <div className="modal-body">
+                <p>{editDateError}</p>
+              </div>
+              <div className="modal-footer">
+                <button className="modal-btn" onClick={() => setEditDateError('')}>Okay</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showNoChangesModal && (
+          <div className="modal-overlay">
+            <div className="success-modal-content">
+              <div className="modal-body">
+                <p>You haven't updated anything.</p>
+                <p>Redirecting to dashboard...</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showClosePopup && (
+          <div className="modal-overlay">
+            <div className="success-modal-content">
+              <div className="modal-body">
+                <p>Your request has been received and an agent will be in touch within the next 24 hours.</p>
+                <p>Redirecting to dashboard...</p>
               </div>
             </div>
           </div>
