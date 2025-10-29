@@ -1,22 +1,15 @@
 import React from 'react';
-import EventsImage from '../images/EventsImage.jpg';
+import aboutImage from '../images/About.png';
+import innovationIcon from '../images/Innovation.png';
+import integrityIcon from '../images/Integrity.jpg';
+import excellenceIcon from '../images/Excellence.jpg';
+import partnershipIcon from '../images/Partnership.png';
 import './About.css';
 
-/**
- * About Component
- * About Component
- * pupose: Display information about the application.
- */
  function About() {
     return (
-        //Main container for the About component
-        <div className="about-container">
-           {/*About Us and Our Story sections - side by side */}
+        <div className="about-container" id="about">
            <div className="side-by-side-container">
-              {/*
-                This section now contains both 'About Us' (Mission) and 'Our Team' content,
-                making them both appear to the left of the image in the grid layout.
-              */}
               <section className='about-section'>
                 <h1>About Us</h1>
                 <p>Welcome to Snakepiece Event House Kenya, where creativity blends with precision. We are among the top event
@@ -26,8 +19,6 @@ import './About.css';
                     From intimate gatherings to large-scale productions, our team turn ideas into experiences that inspire, connect and celebrate life's most meaningful moments.        
                 </p>
                 
-                {/* MOVED: Team Section - now appears immediately below the 'About Us' paragraph 
-                */}
                 <div className='team-section-in-about-us'>
                     <h2>Our Team</h2>
                     <p>
@@ -38,44 +29,42 @@ import './About.css';
                 </div>
               </section>
 
-              {/*Story section - company background (The Image container) */}
               <section className='about-section'>
                 <div className='about-image'>
-                    <img src={EventsImage} alt='SnakePiece Event House'/>
+                    <img src={aboutImage} alt='SnakePiece Event House'/>
                 </div>
-               
+
               </section>
            </div>
            
-           {/* REMOVED: The original separate 'Team Section' JSX is deleted from here.
-             The 'Our Team' content is now inside the first side-by-side column.
-           */}
-           
-                {/*Values Section - company core principles */}
                 <section className='about-section'>
                     <h2>Our Values</h2>
                     <div className='values-grid'>
                         <div className='value-item'>
-                            <h3>🚀 Innovation</h3>
+                            <img src={innovationIcon} alt="Innovation" className='value-icon' />
+                            <h3>Innovation</h3>
                             <p>
-                              Innovation drives us. We bring fresh ideas and unique concepts to make your event truly one-of-a-kind.  
+                              Innovation drives us. We bring fresh ideas and unique concepts to make your event truly one-of-a-kind.
                             </p>
 
                         </div>
-                         
-                        {/* Value 2: Integrity */}
+
+
                         <div className="value-item">
-                            <h3>💎 Integrity</h3>
+                            <img src={integrityIcon} alt="Integrity" className='value-icon' />
+                            <h3>Integrity</h3>
                             <p>We maintain transparency and honesty in all our dealings</p>
                         </div>
-                        {/* Value 3: Excellence */}
+
                         <div className="value-item">
-                            <h3>✨ Excellence</h3>
+                            <img src={excellenceIcon} alt="Excellence" className='value-icon' />
+                            <h3>Excellence</h3>
                             <p>We pursue perfection in every detail, ensuring each event exceeds expectations and creates lasting memories.</p>
                         </div>
-                         {/* Value 4: Collaboration */}
+
                         <div className="value-item">
-                            <h3>🤝 Patnership</h3>
+                            <img src={partnershipIcon} alt="Partnership" className='value-icon' />
+                            <h3>Partnership</h3>
                             <p>Your vision is our mission. We work closely with clients to understand and bring their dreams to life.</p>
                         </div>
                     </div>          
