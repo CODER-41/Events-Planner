@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaExclamationTriangle, FaCalendarAlt, FaMagic, FaFilm, FaTshirt, FaSmile, FaRocket, FaCode, FaPaintBrush, FaCrown, FaSadTear, FaHeart, FaHeartBroken } from 'react-icons/fa';
+import { FaExclamationTriangle, FaCalendarAlt, FaMagic, FaFilm, FaTshirt, FaSmile, FaRocket, FaCode, FaPaintBrush, FaCrown, FaSadTear, FaHeart, FaHeartBroken, FaRobot, FaSync } from 'react-icons/fa';
+import axios from 'axios';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -34,6 +35,17 @@ const Dashboard = () => {
   const [trafficData, setTrafficData] = useState({});
   const [trafficLoading, setTrafficLoading] = useState({});
   const [expandedFAQs, setExpandedFAQs] = useState({});
+  const [aiMessages, setAiMessages] = useState([
+    { id: 1, text: "Hello! I'm your AI Smart Assistant. How can I help you with your event planning today?", sender: 'ai', timestamp: new Date() }
+  ]);
+  const [aiInput, setAiInput] = useState('');
+  const [isAiTyping, setIsAiTyping] = useState(false);
+
+  const refreshAiChat = () => {
+    setAiMessages([
+      { id: 1, text: "Hello! I'm your AI Smart Assistant. How can I help you with your event planning today?", sender: 'ai', timestamp: new Date() }
+    ]);
+  };
   const navigate = useNavigate();
 
   // Edit modal states
@@ -333,6 +345,75 @@ const Dashboard = () => {
     }));
   };
 
+  const sendAiMessage = async () => {
+    if (!aiInput.trim()) return;
+
+    const currentInput = aiInput;
+    const userMessage = { id: Date.now(), text: currentInput, sender: 'user', timestamp: new Date() };
+
+    setAiInput('');
+    setAiMessages(prev => [...prev, userMessage]);
+    setIsAiTyping(true);
+
+    // Gemini API URL
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${process.env.REACT_APP_GEMINI_API_KEY}`;
+
+    // Format conversation history for Gemini
+    const formattedHistory = aiMessages.slice(-10).map(msg => ({
+      role: msg.sender === 'ai' ? 'model' : 'user',
+      parts: [{ text: msg.text }],
+    }));
+
+    const payload = {
+      contents: [
+        ...formattedHistory,
+        { role: 'user', parts: [{ text: currentInput }] }
+      ],
+      generationConfig: {
+        temperature: 0.7,
+        maxOutputTokens: 500,
+      },
+      // System instruction for Gemini
+      systemInstruction: {
+        role: "system",
+        parts: [{
+          text: "You are an AI Smart Assistant for Snakepiece Event House Kenya. You help users with event planning, provide advice on weddings, corporate events, birthday parties, conferences, and other celebrations. Be helpful, professional, and knowledgeable about event planning in Kenya. Keep responses concise but informative."
+        }]
+      }
+    };
+
+    try {
+      const response = await axios.post(API_URL, payload);
+      const aiResponseText = response.data.candidates[0].content.parts[0].text;
+
+      const aiMessage = {
+        id: Date.now() + 1,
+        text: aiResponseText,
+        sender: 'ai',
+        timestamp: new Date()
+      };
+      setAiMessages(prev => [...prev, aiMessage]);
+    } catch (error) {
+      console.error('Gemini API error:', error);
+      let errorMessageText = "I'm sorry, I'm currently unable to provide assistance. Please check your internet connection or try again later.";
+      if (error.response && error.response.status === 429) {
+        errorMessageText = "I'm experiencing high demand right now. This could be due to rate limits on my service. Please try again in a few moments.";
+      }
+
+      const errorMessage = {
+        id: Date.now() + 1,
+        text: errorMessageText,
+        sender: 'ai',
+        timestamp: new Date()
+      };
+      setAiMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsAiTyping(false);
+    }
+  };
+
+
+
   const fetchWeather = async (location, eventDate, bookingId) => {
     if (!location) return;
     setWeatherLoading(prev => ({ ...prev, [bookingId]: true }));
@@ -467,6 +548,11 @@ const Dashboard = () => {
             </li>
             <li className={activeTab === 'help' ? 'active' : ''}>
               <button onClick={() => setActiveTab('help')}>Need Help?</button>
+            </li>
+            <li className={activeTab === 'ai-assistant' ? 'active ai-tab' : 'ai-tab'}>
+              <button onClick={() => setActiveTab('ai-assistant')}>
+                <FaRobot /> AI Smart Assistant
+              </button>
             </li>
           </ul>
         </nav>
@@ -1398,6 +1484,79 @@ const Dashboard = () => {
               <div className="modal-body">
                 <p>Your request has been received and an agent will be in touch within the next 24 hours.</p>
                 <p>Redirecting to dashboard...</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'ai-assistant' && (
+          <div className="ai-assistant-section">
+            <div className="ai-header">
+              <h2>AI Smart Assistant</h2>
+              <button onClick={refreshAiChat} className="refresh-chat-btn" title="Refresh Chat">
+                <FaSync />
+              </button>
+            </div>
+            <p className="ai-subtitle">Get intelligent event planning advice and recommendations</p>
+
+            <div className="chat-container">
+              <div className="chat-messages">
+                {aiMessages.map(message => (
+                  <div key={message.id} className={`message ${message.sender === 'ai' ? 'ai-message' : 'user-message'}`}>
+                    <div className="message-avatar">
+                      {message.sender === 'ai' ? <FaRobot /> : <span>{user?.name?.charAt(0).toUpperCase()}</span>}
+                    </div>
+                    <div className="message-content">
+                      <p>{message.text}</p>
+                      <span className="message-time">{message.timestamp.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                    </div>
+                  </div>
+                ))}
+                {isAiTyping && (
+                  <div className="message ai-message">
+                    <div className="message-avatar">
+                      <FaRobot />
+                    </div>
+                    <div className="message-content">
+                      <div className="typing-indicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              <div className="chat-input-container">
+                <input
+                  type="text"
+                  value={aiInput}
+                  onChange={(e) => setAiInput(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && sendAiMessage()}
+                  placeholder="Ask me about event planning, budgeting, venues, or anything else..."
+                  className="chat-input"
+                  disabled={isAiTyping}
+                />
+                <button
+                  onClick={sendAiMessage}
+                  className="send-btn"
+                  disabled={!aiInput.trim() || isAiTyping}
+                >
+                  <FaRocket />
+                </button>
+              </div>
+            </div>
+
+            <div className="ai-suggestions">
+              <h3>Quick Suggestions</h3>
+              <div className="suggestion-buttons">
+                <button onClick={() => setAiInput("Help me plan a wedding")}>Wedding Planning</button>
+                <button onClick={() => setAiInput("Corporate event ideas")}>Corporate Events</button>
+                <button onClick={() => setAiInput("Birthday party tips")}>Birthday Parties</button>
+                <button onClick={() => setAiInput("How to manage budget")}>Budget Management</button>
+                <button onClick={() => setAiInput("Venue selection advice")}>Venue Selection</button>
+                <button onClick={() => setAiInput("Catering recommendations")}>Catering Tips</button>
               </div>
             </div>
           </div>

@@ -22,7 +22,7 @@ function AppContent() {
 
   return (
     <div className="App">
-      <Navbar user={user} setUser={setUser} />
+      {!user && <Navbar user={user} setUser={setUser} />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Auth setUser={setUser} isLoginInitial={true} />} />
