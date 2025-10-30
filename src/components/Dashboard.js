@@ -355,30 +355,34 @@ const Dashboard = () => {
     setAiMessages(prev => [...prev, userMessage]);
     setIsAiTyping(true);
 
-    // Gemini API URL
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${process.env.REACT_APP_GEMINI_API_KEY}`;
+    // Use the stable v1beta Gemini API URL with gemini-1.5-flash-8b-002 model
+    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b-002:generateContent?key=${process.env.REACT_APP_GEMINI_API_KEY}`;
 
-    // Format conversation history for Gemini
-    const formattedHistory = aiMessages.slice(-10).map(msg => ({
-      role: msg.sender === 'ai' ? 'model' : 'user',
-      parts: [{ text: msg.text }],
-    }));
+    // Construct a valid conversation history for Gemini
+    const conversationHistory = [
+      // System instruction integrated into contents
+      {
+        role: "user",
+        parts: [{ text: "You are an AI Smart Assistant for Snakepiece Event House Kenya. You help users with event planning, provide advice on weddings, corporate events, birthday parties, conferences, and other celebrations. Be helpful, professional, and knowledgeable about event planning in Kenya. Keep responses concise but informative." }]
+      },
+      {
+        role: "model",
+        parts: [{ text: "Hello! I'm your AI Smart Assistant. How can I help you with your event planning today?" }]
+      },
+      // Add the last 10 messages from the chat, ensuring the roles are correct
+      ...aiMessages.slice(-10).map(msg => ({
+        role: msg.sender === 'ai' ? 'model' : 'user',
+        parts: [{ text: msg.text }],
+      })),
+      // Add the current user message
+      { role: 'user', parts: [{ text: currentInput }] }
+    ];
 
     const payload = {
-      contents: [
-        ...formattedHistory,
-        { role: 'user', parts: [{ text: currentInput }] }
-      ],
+      contents: conversationHistory,
       generationConfig: {
         temperature: 0.7,
         maxOutputTokens: 500,
-      },
-      // System instruction for Gemini
-      systemInstruction: {
-        role: "system",
-        parts: [{
-          text: "You are an AI Smart Assistant for Snakepiece Event House Kenya. You help users with event planning, provide advice on weddings, corporate events, birthday parties, conferences, and other celebrations. Be helpful, professional, and knowledgeable about event planning in Kenya. Keep responses concise but informative."
-        }]
       }
     };
 
