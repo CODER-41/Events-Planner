@@ -1,87 +1,116 @@
-// App.js - Main component for the login/register page
 import React, { useState } from 'react';
-import './style.css'; // Import the CSS file for styling
+import { useNavigate } from 'react-router-dom';
+import './Login.css';
+import snakeImage from '../images/Snake.png';
 
-function App() {
-  const [isLogin, setIsLogin] = useState(true); // Toggle between login and register
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
-  });
+const Login = ({ setUser }) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [nationalId, setNationalId] = useState('');
+  const [error, setError] = useState('');
+  const [showLoadingPopup, setShowLoadingPopup] = useState(false);
+  const [showWelcomePopup, setShowWelcomePopup] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (isLogin) {
-      // Simulate login logic
-      console.log('Logging in with:', formData.username, formData.password);
-      alert('Login successful! (Simulated)');
-    } else {
-      // Simulate register logic
-      if (formData.password !== formData.confirmPassword) {
-        alert('Passwords do not match!');
-        return;
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/users`);
+      const users = await response.json();
+      const user = users.find(u => u.email === email && u.password === password && u.nationalId === nationalId);
+      if (user) {
+        setShowLoadingPopup(true);
+          setTimeout(() => {
+            setShowLoadingPopup(false);
+            setShowWelcomePopup(true);
+            setTimeout(() => {
+              setShowWelcomePopup(false);
+              localStorage.setItem('user', JSON.stringify(user));
+              setUser(user);
+              navigate('/dashboard');
+            }, 3000);
+          }, 3000);
+      } else {
+        setError('Invalid email, password, or National ID');
       }
-      console.log('Registering with:', formData.username, formData.email, formData.password);
-      alert('Registration successful! (Simulated)');
+    } catch (err) {
+      setError('Login failed. Please try again.');
     }
   };
 
   return (
-    <div className="app">
-      <div className="container">
-        <h1>{isLogin ? 'Login' : 'Register'}</h1>
-        <div className="toggle">
-          <button onClick={() => setIsLogin(true)} className={isLogin ? 'active' : ''}>Login</button>
-          <button onClick={() => setIsLogin(false)} className={!isLogin ? 'active' : ''}>Register</button>
+    <div className="login-container">
+      <div className="login-left-panel">
+        <div className="login-form-wrapper">
+          <h2>Login to Your Account</h2>
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label>Email</label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="form-group password-group">
+              <label>Password</label>
+              <div className="password-input-container">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? 'Hide' : 'Show'}
+                </button>
+              </div>
+            </div>
+            <div className="form-group">
+              <label>National ID (8 digits only)</label>
+              <input
+                type="text"
+                value={nationalId}
+                onChange={(e) => setNationalId(e.target.value.replace(/\D/g, '').slice(0, 8))}
+                placeholder="Enter your 8-digit National ID"
+                required
+              />
+            </div>
+            {error && <p className="error">{error}</p>}
+            <button type="submit" className="login-btn">Sign in</button>
+          </form>
+          <p>Don't have an account? <button onClick={() => navigate('/signup')} className="signup-link-btn">Sign up</button></p>
         </div>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-          />
-          {!isLogin && (
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-          )}
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-          {!isLogin && (
-            <input
-              type="password"
-              name="confirmPassword"
-              placeholder="Confirm Password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-            />
-          )}
-          <button type="submit">{isLogin ? 'Login' : 'Register'}</button>
-        </form>
       </div>
+      <div className="login-right-panel rain">
+        <div className="decorative-content">
+          <img src={snakeImage} alt="Snake" />
+        </div>
+      </div>
+      {showLoadingPopup && (
+        <div className="popup-overlay">
+          <div className="popup-content">
+            <h3>Loading...</h3>
+            <p>Please wait while we log you in.</p>
+          </div>
+        </div>
+      )}
+      {showWelcomePopup && (
+        <div className="popup-overlay">
+          <div className="popup-content">
+            <h3>Welcome to your Dashboard!</h3>
+            <p>Enjoy your experience.</p>
+          </div>
+        </div>
+      )}
     </div>
   );
-}
+};
 
-export default App;
+export default Login;
