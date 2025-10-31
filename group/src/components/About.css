@@ -182,4 +182,199 @@
   transform: translateY(-2px);
   box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
 }
+@media (max-width: 1024px) and (orientation: landscape) {
+  .about-container {
+    padding: 30px;
+    max-width: 95%;
+  }
+  
+  .about-header h1 {
+    font-size: 36px;
+  }
+  
+  .about-section h2 {
+    font-size: 26px;
+  }
+  
+  .cta-section {
+    padding: 60px 40px;
+  }
+  
+  .cta-section h2 {
+    font-size: 2rem;
+  }
+}
 
+@media (max-width: 768px) and (orientation: landscape) {
+  .about-container {
+    padding: 25px;
+  }
+  
+  .about-header h1 {
+    font-size: 32px;
+  }
+  
+  .about-section h2 {
+    font-size: 24px;
+  }
+  
+  .cta-section {
+    padding: 50px 30px;
+  }
+  
+  .cta-section h2 {
+    font-size: 1.8rem;
+  }
+  
+  .cta-section p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) and (orientation: landscape) {
+  .about-container {
+    padding: 20px;
+    max-width: 95%;
+  }
+  
+  .about-section {
+    margin-bottom: 30px;
+  }
+  
+  .about-section h2 {
+    font-size: 22px;
+  }
+  
+  .values-grid {
+    gap: 20px;
+  }
+  
+  .value-item {
+    padding: 20px;
+  }
+  
+  .cta-section {
+    padding: 40px 25px;
+    margin-top: 50px;
+  }
+  
+  .cta-section h2 {
+    font-size: 1.5rem;
+  }
+  
+  .cta-section p {
+    font-size: 0.95rem;
+    margin-bottom: 30px;
+  }
+  
+  .cta-button {
+    padding: 15px 40px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) and (orientation: landscape) {
+  .about-container {
+    padding: 20px;
+  }
+  
+  .about-header h1 {
+    font-size: 28px;
+  }
+  
+  .about-tagline {
+    font-size: 16px;
+  }
+  
+  .about-section h2 {
+    font-size: 22px;
+  }
+  
+  .about-section p {
+    font-size: 15px;
+  }
+  
+  .side-by-side-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .values-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .value-item {
+    padding: 20px;
+  }
+  
+  .value-item h3 {
+    font-size: 18px;
+  }
+  
+  .value-item p {
+    font-size: 14px;
+  }
+  
+  .cta-section {
+    padding: 50px 20px;
+    margin-top: 50px;
+  }
+  
+  .cta-section h2 {
+    font-size: 1.8rem;
+  }
+  
+  .cta-section p {
+    font-size: 1rem;
+  }
+  
+  .cta-button {
+    padding: 15px 35px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 1024px) and (orientation: portrait) {
+  .side-by-side-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 767px) and (orientation: portrait) {
+  .about-container {
+    padding: 20px;
+    max-width: 100%;
+  }
+  
+  .about-header h1 {
+    font-size: 32px;
+  }
+  
+  .about-section h2 {
+    font-size: 24px;
+  }
+  
+  .side-by-side-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .values-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .about-section p,
+  .value-item p {
+    font-size: 15px;
+  }
+
+  .cta-section {
+    padding: 40px 20px;
+    margin-top: 40px;
+  }
+  
+  .cta-button {
+    padding: 15px 35px;
+    font-size: 0.95rem;
+  }
+}
