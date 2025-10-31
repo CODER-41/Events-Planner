@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaExclamationTriangle, FaCalendarAlt, FaMagic, FaFilm, FaTshirt, FaSmile, FaRocket, FaCode, FaPaintBrush, FaCrown, FaSadTear, FaHeart, FaHeartBroken } from 'react-icons/fa';
+import axios from 'axios';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -34,6 +35,9 @@ const Dashboard = () => {
   const [trafficData, setTrafficData] = useState({});
   const [trafficLoading, setTrafficLoading] = useState({});
   const [expandedFAQs, setExpandedFAQs] = useState({});
+  const [aiInput, setAiInput] = useState('');
+  const [aiMessages, setAiMessages] = useState([]);
+  const [isAiTyping, setIsAiTyping] = useState(false);
   const navigate = useNavigate();
 
   // Edit modal states
