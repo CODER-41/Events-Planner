@@ -51,6 +51,11 @@ The dashboard is the central hub for logged-in users, organized into several tab
 - **Live Traffic Updates**: Provides real-time traffic status for the Nairobi-Nakuru highway using the TomTom API, helping with travel planning.
 - **Actionable Suggestions**: Offers practical advice based on the weather (e.g., "Add tents for rain") and traffic conditions (e.g., "Allow extra travel time").
 
+#### 🤖 AI Smart Assistant
+- **Coming Soon Feature**: An interactive AI-powered assistant designed to help users plan their perfect events.
+- **Intelligent Guidance**: Will provide personalized recommendations, event planning tips, and real-time assistance.
+- **Coming Soon Animation**: Currently displays an engaging "Coming Soon" page with rocket launch and sparkle animations while the feature is being developed.
+
 #### ❓ Need Help? (FAQ)
 - **Comprehensive FAQ**: An accordion-style list of frequently asked questions covering booking, services, pricing, and more.
 - **Urgent Assistance**: A direct link for users to get immediate help via WhatsApp.
