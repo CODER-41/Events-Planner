@@ -1,6 +1,7 @@
 /* App.css */
 .App {
   text-align: left;
+  padding-top: 80px; /* Adjust for fixed navbar height */
 }
 
 * {
