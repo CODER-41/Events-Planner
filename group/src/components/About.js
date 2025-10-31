@@ -70,6 +70,14 @@ import './About.css';
                     </div>          
                     
                 </section>
+                
+                <section className='about-section'>
+                    <div class="cta-section">
+                        <h2>Let's Create Something Extraordinary</h2>
+                        <p>Ready to bring your vision to life? We'd love to hear about your upcoming event.</p>
+                        <a href="#contact" class="cta-button">Get In Touch</a>
+                    </div>
+                </section>
 
              
 
